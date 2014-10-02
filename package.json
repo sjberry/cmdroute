@@ -1,6 +1,6 @@
 {
   "name": "cmdroute",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A package to help wrap and route commands.",
   "author": "Steven Berry <steven@sberry.me> (http://www.sberry.me/)",
   "license": "MIT",
