@@ -1,9 +1,10 @@
 {
   "name": "cmdroute",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A package to help wrap and route commands.",
   "author": "Steven Berry <steven@sberry.me> (http://www.sberry.me/)",
   "license": "MIT",
+  "main": "bin/cmdroute.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/sjberry/cmdroute.git"
