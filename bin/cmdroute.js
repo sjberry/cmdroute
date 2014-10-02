@@ -91,7 +91,7 @@ function help() {
 }
 
 
-module.exports = function init(mnfst, rt) {
+module.exports = function(mnfst, rt) {
 	manifest = mnfst;
 	root = rt;
 	argParser = optionator({
@@ -114,7 +114,6 @@ module.exports = function init(mnfst, rt) {
 
 	return {
 		exec: exec,
-		help: help,
-		init: init
+		help: help
 	};
 };
