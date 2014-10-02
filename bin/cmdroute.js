@@ -5,34 +5,7 @@ var util = require('util');
 var optionator = require('optionator');
 
 
-var manifest = {
-	name: '<module>',
-	version: ''
-};
-var argParser = optionator({
-	prepend: 'Usage: ' + manifest.name + ' [command] [options]',
-	options: [
-		{
-			option: 'help',
-			alias: 'h',
-			type: 'Boolean',
-			description: 'Displays help'
-		},
-		{
-			option: 'version',
-			alias: 'v',
-			type: 'Boolean',
-			description: 'Displays version'
-		}
-	]
-});
-
-
-function init(mnfst) {
-	manifest = mnfst;
-
-	return module.exports;
-}
+var argParser, manifest, root;
 
 
 function exec(argv) {
@@ -58,8 +31,22 @@ function exec(argv) {
 		}
 	}
 
-	resolved = path.resolve(path.join(__dirname, 'commands', cmd + '.js'));
-	command = require(resolved);
+	try {
+		resolved = path.resolve(path.join(root, 'commands', cmd + '.js'));
+	}
+	catch(ex) {
+		util.puts('Command directory not found.');
+		process.exit(0);
+	}
+
+	try {
+		command = require(resolved);
+	}
+	catch(ex) {
+		util.puts('Command `' + cmd + '` not found.');
+		process.exit(0);
+	}
+
 	result = command.main(process.argv);
 
 	if (typeof result === 'string') {
@@ -75,7 +62,14 @@ function exec(argv) {
 function help() {
 	var i, dir, dirname, filename, files, name;
 
-	dirname = path.resolve(path.join(__dirname, 'commands'));
+	try {
+		dirname = path.resolve(path.join(root, 'commands'));
+	}
+	catch(ex) {
+		util.puts('Command directory not found.');
+		process.exit(0);
+	}
+
 	dir = fs.readdirSync(dirname);
 	files = [];
 
@@ -97,8 +91,30 @@ function help() {
 }
 
 
-module.exports = {
-	exec: exec,
-	help: help,
-	init: init
+module.exports = function init(mnfst, rt) {
+	manifest = mnfst;
+	root = rt;
+	argParser = optionator({
+		prepend: 'Usage: ' + manifest.name + ' [command] [options]',
+		options: [
+			{
+				option: 'help',
+				alias: 'h',
+				type: 'Boolean',
+				description: 'Displays help'
+			},
+			{
+				option: 'version',
+				alias: 'v',
+				type: 'Boolean',
+				description: 'Displays version'
+			}
+		]
+	});
+
+	return {
+		exec: exec,
+		help: help,
+		init: init
+	};
 };
